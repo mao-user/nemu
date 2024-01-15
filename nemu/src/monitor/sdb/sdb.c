@@ -58,12 +58,20 @@ static int cmd_si(char *args) {
   return 0;
 }
 
+static int cmd_x(char *args){
+  return 0;
+}
+
 static int cmd_info(char *args) {
   if (strcmp(args, "r") == 0){
     isa_reg_display();
   }
+  else if (strcmp(args, "w") == 0)
+  {
+    return 0;
+  }
   else{
-    
+    printf("no such command");
   }
   return 0;
 }
@@ -79,7 +87,8 @@ static struct {
   { "c", "Continue the execution of the program", cmd_c },
   { "q", "Exit NEMU", cmd_q },
   { "si", "execute program step by step with si follow a num,such as si 10(si [N])", cmd_si },
-  { "info", "print your reg", cmd_info },
+  { "info", "print your reg with info_r ,", cmd_info },
+  { "x", "Scan Memory with (x num address)", cmd_x },
   /* TODO: Add more commands */
 
 };
