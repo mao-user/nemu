@@ -58,7 +58,34 @@ static int cmd_si(char *args) {
   return 0;
 }
 
-static int cmd_x(char *args){
+static int cmd_x(char *args) {
+  word_t vaddr_read();
+  char *arg1 = strtok(NULL, " ");
+  if (arg1 == NULL) {
+    printf("Usage: x N EXPR\n");
+    return 0;
+  }
+  char *arg2 = strtok(NULL, " ");
+  if (arg1 == NULL) {
+    printf("Usage: x N EXPR\n");
+    return 0;
+  }
+
+  int n = strtol(arg1, NULL, 10);
+  vaddr_t expr = strtol(arg2, NULL, 16);
+
+  int i, j;
+  for (i = 0; i < n;) {
+    printf("%#018x: ", expr);
+    
+    for (j = 0; i < n && j < 4; i++, j++) {
+      word_t w = vaddr_read(expr, 8);
+      expr += 8;
+      printf("%#018x ", w);
+    }
+    puts("");
+  }
+  
   return 0;
 }
 
