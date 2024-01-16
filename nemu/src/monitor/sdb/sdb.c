@@ -76,7 +76,7 @@ static int cmd_x(char *args) {
 
   int i, j;
   for (i = 0; i < n;) {
-    printf("%#018x: ", expr);
+    printf("%#018x: ",expr);
     
     for (j = 0; i < n && j < 4; i++, j++) {
       word_t w = vaddr_read(expr, 1);
