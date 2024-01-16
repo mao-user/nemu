@@ -79,7 +79,7 @@ static int cmd_x(char *args) {
     printf("%#018x: ", expr);
     
     for (j = 0; i < n && j < 4; i++, j++) {
-      word_t w = vaddr_read(expr, 8);
+      word_t w = vaddr_read(expr, 1);
       expr += 8;
       printf("%#018x ", w);
     }
