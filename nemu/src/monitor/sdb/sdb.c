@@ -76,12 +76,12 @@ static int cmd_x(char *args) {
 
   int i, j;
   for (i = 0; i < n;) {
-    printf("%#010x: ",expr);
+    printf("%#016x: ",expr);
     
     for (j = 0; i < n && j < 4; i++, j++) {
       word_t w = vaddr_read(expr, 1);
       expr += 8;
-      printf("%#010x ", w);
+      printf("%#016x ", w);
     }
     puts("");
   }
