@@ -135,6 +135,92 @@ static bool make_token(char *e) {
   return true;
 }
 
+bool check_parentheses(int p, int q) {
+  if (tokens[p].type=='(' && tokens[q].type==')') {
+    int par = 0;
+    for (int i = p; i <= q; i++) {
+      if (tokens[i].type=='(') par++;
+      else if (tokens[i].type==')') par--;
+
+      if (par == 0) return i==q; // the leftest parenthese is matched
+    }
+  }
+  return false;
+}
+
+int find_major(int p, int q) {
+  int ret = -1, par = 0, op_type = 0;
+  for (int i = p; i <= q; i++) {
+    if (tokens[i].type == TK_NUM) {
+      continue;
+    }
+    if (tokens[i].type == '(') {
+      par++;
+    } else if (tokens[i].type == ')') {
+      if (par == 0) {
+        return -1;
+      }
+      par--;
+    } else if (par > 0) {
+      continue;
+    } else {
+      int tmp_type = 0;
+      switch (tokens[i].type) {
+      case '*': case '/': tmp_type = 1; break;
+      case '+': case '-': tmp_type = 2; break;
+      default: assert(0);
+      }
+      if (tmp_type >= op_type) {
+        op_type = tmp_type;
+        ret = i;
+      }
+    }
+  }
+  if (par != 0) return -1;
+  return ret;
+}
+
+
+word_t eval(int p, int q, bool *ok) {
+  *ok = true;
+  if (p > q) {
+    *ok = false;
+    return 0;
+  } else if (p == q) {
+    if (tokens[p].type != TK_NUM) {
+      *ok = false;
+      return 0;
+    }
+    word_t ret = strtol(tokens[p].str, NULL, 10);
+    return ret;
+  } else if (check_parentheses(p, q)) {
+    return eval(p+1, q-1, ok);
+  } else {    
+    int major = find_major(p, q);
+    if (major < 0) {
+      *ok = false;
+      return 0;
+    }
+
+    word_t val1 = eval(p, major-1, ok);
+    if (!*ok) return 0;
+    word_t val2 = eval(major+1, q, ok);
+    if (!*ok) return 0;
+    
+    switch(tokens[major].type) {
+      case '+': return val1 + val2;
+      case '-': return val1 - val2;
+      case '*': return val1 * val2;
+      case '/': if (val2 == 0) {
+        *ok = false;
+        return 0;
+      } 
+      return (sword_t)val1 / (sword_t)val2; // e.g. -1/2, may not pass the expr test
+      default: assert(0);
+    }
+  }
+}
+
 
 word_t expr(char *e, bool *success) {
   if (!make_token(e)) {
@@ -142,8 +228,6 @@ word_t expr(char *e, bool *success) {
     return 0;
   }
 
-  /* TODO: Insert codes to evaluate the expression. */
-  TODO();
-
-  return 0;
+  return eval(0, nr_token-1, success);;
 }
+
