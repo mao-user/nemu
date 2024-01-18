@@ -103,23 +103,34 @@ static int cmd_info(char *args) {
   return 0;
 }
 
-static int cmd_p(char *args){
-  char *arg = strtok(NULL," ");
-  if(arg == NULL){
-    printf("Usage: p expr");
-    return 0;
-  }
-  bool success = true;
-  word_t ret = expr(arg,&success);
-  if (success == true)
-  {
-    printf("%#016x",ret);
-  }
-  else{
-    printf("can not identify\n");
+static int cmd_p(char* args) {
+  bool success;
+  word_t res = expr(args, &success);
+  if (!success) {
+    puts("invalid expression");
+  } else {
+    printf("%u\n", res);
   }
   return 0;
 }
+
+// static int cmd_p(char *args){
+//   char *arg = strtok(NULL," ");
+//   if(arg == NULL){
+//     printf("Usage: p expr");
+//     return 0;
+//   }
+//   bool success = true;
+//   word_t ret = expr(arg,&success);
+//   if (success == true)
+//   {
+//     printf("%#016x",ret);
+//   }
+//   else{
+//     printf("can not identify\n");
+//   }
+//   return 0;
+// }
 
 static int cmd_help(char *args);
 
@@ -134,7 +145,7 @@ static struct {
   { "si", "execute program step by step with si follow a num,such as si 10(si [N])", cmd_si },
   { "info", "print your reg with info_r ,", cmd_info },
   { "x", "Scan Memory with (x num address)", cmd_x },
-  { "p", "compute expr by (p expr)", cmd_p },
+  {"p", "Usage: p EXPR. Calculate the expression, e.g. p $eax + 1", cmd_p },
   /* TODO: Add more commands */
 
 };
