@@ -20,11 +20,13 @@
  */
 #include <regex.h>
 
+
 enum {
-  TK_NOTYPE = 256, TK_EQ, TK_NUM, TK_REG, TK_VAR
-
-  /* TODO: Add more token types */
-
+  TK_NOTYPE = 256, 
+  TK_EQ,
+  TK_NUM, // 10 & 16
+  TK_REG,
+  TK_VAR,
 };
 
 static struct rule {
