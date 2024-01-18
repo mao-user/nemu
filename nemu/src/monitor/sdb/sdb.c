@@ -113,7 +113,7 @@ static int cmd_p(char *args){
   word_t ret = expr(arg,&success);
   if (success == true)
   {
-    printf("%#016x",ret);
+    printf("%#16x\n",ret);
   }
   else{
     printf("can not identify\n");
