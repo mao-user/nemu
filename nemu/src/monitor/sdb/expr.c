@@ -99,19 +99,27 @@ static bool make_token(char *e) {
 
         position += substr_len;
 
-        tokens[position].type = rules[i].token_type;
-        strcpy(tokens[position].str,rules[i].regex);
+        tokens[nr_token].type = rules[i].token_type;
+        strcpy(tokens[nr_token].str,rules[i].regex);
+
+        nr_token += 1;
         /* TODO: Now a new token is recognized with rules[i]. Add codes
          * to record the token in the array `tokens'. For certain types
          * of tokens, some extra actions should be performed.
          */
 
-        switch (rules[i].token_type) {
-          case TK_NOTYPE: 
-          break;
-          default: return false;
-        }
+        if (rules[i].token_type == TK_NOTYPE) break;
 
+        tokens[nr_token].type = rules[i].token_type;
+        switch (rules[i].token_type) {
+          case TK_NUM:
+          case TK_REG:
+          case TK_VAR:
+            strncpy(tokens[nr_token].str, substr_start, substr_len);
+            tokens[nr_token].str[substr_len] = '\0';
+            // todo: handle overflow (token exceeding size of 32B)
+        }
+        nr_token++;
         break;
       }
     }

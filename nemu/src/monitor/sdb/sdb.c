@@ -116,7 +116,7 @@ static int cmd_p(char *args){
     printf("%#016x",ret);
   }
   else{
-    printf("can not identify");
+    printf("can not identify\n");
   }
   return 0;
 }
