@@ -88,28 +88,19 @@ static bool make_token(char *e) {
   regmatch_t pmatch;
 
   nr_token = 0;
-
   while (e[position] != '\0') {
     /* Try all rules one by one. */
     for (i = 0; i < NR_REGEX; i ++) {
-      if (regexec(&re[i], e + position, 1, &pmatch, 0) == 0 && pmatch.rm_so == 0) {
+      int reg_res = regexec(&re[i], e + position, 1, &pmatch, 0);
+      if (reg_res == 0 && pmatch.rm_so == 0) {
         char *substr_start = e + position;
         int substr_len = pmatch.rm_eo;
 
-        Log("match rules[%d] = \"%s\" at position %d with len %d: %.*s",
-            i, rules[i].regex, position, substr_len, substr_len, substr_start);
-
+        // Log("match rules[%d] = \"%s\" at position %d with len %d: %.*s",
+        //     i, rules[i].regex, position, substr_len, substr_len, substr_start);
+        
         position += substr_len;
-
-        tokens[nr_token].type = rules[i].token_type;
-        strcpy(tokens[nr_token].str,rules[i].regex);
-
-        nr_token += 1;
-        /* TODO: Now a new token is recognized with rules[i]. Add codes
-         * to record the token in the array `tokens'. For certain types
-         * of tokens, some extra actions should be performed.
-         */
-
+        
         if (rules[i].token_type == TK_NOTYPE) break;
 
         tokens[nr_token].type = rules[i].token_type;
@@ -122,6 +113,7 @@ static bool make_token(char *e) {
             // todo: handle overflow (token exceeding size of 32B)
         }
         nr_token++;
+
         break;
       }
     }
@@ -134,6 +126,7 @@ static bool make_token(char *e) {
 
   return true;
 }
+
 
 bool check_parentheses(int p, int q) {
   if (tokens[p].type=='(' && tokens[q].type==')') {
@@ -228,6 +221,6 @@ word_t expr(char *e, bool *success) {
     return 0;
   }
   
-  return eval(0, nr_token-1, success);;
+  return eval(0, nr_token-1, success);
 }
 

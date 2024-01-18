@@ -103,34 +103,23 @@ static int cmd_info(char *args) {
   return 0;
 }
 
-static int cmd_p(char* args) {
-  bool success;
-  word_t res = expr(args, &success);
-  if (!success) {
-    puts("invalid expression");
-  } else {
-    printf("%u\n", res);
+static int cmd_p(char *args){
+  char *arg = strtok(NULL," ");
+  if(arg == NULL){
+    printf("Usage: p expr");
+    return 0;
+  }
+  bool success = true;
+  word_t ret = expr(arg,&success);
+  if (success == true)
+  {
+    printf("%#016x",ret);
+  }
+  else{
+    printf("can not identify\n");
   }
   return 0;
 }
-
-// static int cmd_p(char *args){
-//   char *arg = strtok(NULL," ");
-//   if(arg == NULL){
-//     printf("Usage: p expr");
-//     return 0;
-//   }
-//   bool success = true;
-//   word_t ret = expr(arg,&success);
-//   if (success == true)
-//   {
-//     printf("%#016x",ret);
-//   }
-//   else{
-//     printf("can not identify\n");
-//   }
-//   return 0;
-// }
 
 static int cmd_help(char *args);
 
