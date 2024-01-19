@@ -105,6 +105,8 @@ static bool make_token(char *e) {
 
         tokens[nr_token].type = rules[i].token_type;
         switch (rules[i].token_type) {
+          case TK_NOTYPE:
+          break;
           case TK_NUM:
           case TK_REG:
           case TK_VAR:
