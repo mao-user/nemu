@@ -101,7 +101,7 @@ static bool make_token(char *e) {
         
         position += substr_len;
         
-        if (rules[i].token_type == TK_NOTYPE) break;
+        if (rules[i].token_type == TK_NOTYPE) continue;
 
         tokens[nr_token].type = rules[i].token_type;
         switch (rules[i].token_type) {
