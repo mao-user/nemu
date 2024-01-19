@@ -27,6 +27,7 @@ enum {
   TK_NUM, // 10 & 16
   TK_REG,
   TK_VAR,
+  TK_HEX,
 };
 
 static struct rule {
@@ -38,7 +39,7 @@ static struct rule {
    * Pay attention to the precedence level of different rules.
    */
 
-  {" ", TK_NOTYPE},    // spaces
+  {" +", TK_NOTYPE},    // spaces
   {"\\+", '+'},         // plus
   {"-", '-'},
   {"\\*", '*'},
@@ -88,32 +89,37 @@ static bool make_token(char *e) {
   regmatch_t pmatch;
 
   nr_token = 0;
+
   while (e[position] != '\0') {
     /* Try all rules one by one. */
     for (i = 0; i < NR_REGEX; i ++) {
-      int reg_res = regexec(&re[i], e + position, 1, &pmatch, 0);
-      if (reg_res == 0 && pmatch.rm_so == 0) {
+      if (regexec(&re[i], e + position, 1, &pmatch, 0) == 0 && pmatch.rm_so == 0) {
         char *substr_start = e + position;
         int substr_len = pmatch.rm_eo;
 
-        // Log("match rules[%d] = \"%s\" at position %d with len %d: %.*s",
-        //     i, rules[i].regex, position, substr_len, substr_len, substr_start);
-        
-        position += substr_len;
-        
-        if (rules[i].token_type == TK_NOTYPE) continue;
+        Log("match rules[%d] = \"%s\" at position %d with len %d: %.*s",
+            i, rules[i].regex, position, substr_len, substr_len, substr_start);
 
-        tokens[nr_token].type = rules[i].token_type;
+        position += substr_len;
+
+        /* TODO: Now a new token is recognized with rules[i]. Add codes
+         * to record the token in the array `tokens'. For certain types
+         * of tokens, some extra actions should be performed.
+         */
+
         switch (rules[i].token_type) {
-          case TK_NUM:
+          case TK_NOTYPE:break;
+          case TK_HEX:
           case TK_REG:
-          case TK_VAR:
-            strncpy(tokens[nr_token].str, substr_start, substr_len);
+          case TK_NUM:
+            //tokens[nr_token].type = rules[i].token_type;
+            Assert((substr_len < 32),"%s","An out of buffer error occurred\r\n");
+            strncpy(tokens[nr_token].str,substr_start,substr_len);
             tokens[nr_token].str[substr_len] = '\0';
-            // todo: handle overflow (token exceeding size of 32B)
-            default: continue;
+          default:
+            tokens[nr_token].type = rules[i].token_type;
+            nr_token++;
         }
-        nr_token++;
 
         break;
       }
@@ -127,6 +133,7 @@ static bool make_token(char *e) {
 
   return true;
 }
+
 
 
 bool check_parentheses(int p, int q) {
@@ -221,7 +228,7 @@ word_t expr(char *e, bool *success) {
     *success = false;
     return 0;
   }
-  
+  // 匹配不了空格
   return eval(0, nr_token-1, success);
 }
 
