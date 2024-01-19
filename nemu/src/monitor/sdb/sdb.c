@@ -96,8 +96,7 @@ static int cmd_info(char *args) {
   }
   else if (strcmp(args, "w") == 0)
   {
-    void info_watchpoint();
-    info_watchpoint();
+    return 0;
   }
   else{
     printf("no such command");
@@ -123,37 +122,6 @@ static int cmd_p(char *args){
   return 0;
 }
 
-//设置监视点
-static int cmd_w(char *args){
- if (!args)
-  {
-    printf("Usage: w EXPR\n");
-    return 0;
-  }
-  
-  word_t vaddr_read();
-  vaddr_t expr = strtol(args, NULL, 16);
-  word_t ret = vaddr_read(expr, 1);
-  
-  void wp_set();
-  wp_set(args, ret);
-  
-  return 0;
-}
- 
-//删除序列号为N的监视点
-static int cmd_d(char *args){
-  char *arg = strtok(NULL, "");
-  if (!arg) {
-    printf("Usage: d N\n");
-    return 0;
-  }
-  int no = strtol(arg, NULL, 10);
-  void wp_remove();
-  wp_remove(no);
-  return 0;
-}
-
 static int cmd_help(char *args);
 
 static struct {
@@ -168,8 +136,6 @@ static struct {
   { "info", "print your reg with info_r ,", cmd_info },
   { "x", "Scan Memory with (x num address)", cmd_x },
   {"p", "Usage: p EXPR. Calculate the expression, e.g. p $eax + 1", cmd_p },
-  { "w", "Usage: w EXPR. Watch for the variation of the result of EXPR, pause at variation point", cmd_w },
-  { "d", "Usage: d N. Delete watchpoint of wp.NO=N", cmd_d },
   /* TODO: Add more commands */
 
 };
