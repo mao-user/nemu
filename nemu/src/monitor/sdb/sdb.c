@@ -96,7 +96,8 @@ static int cmd_info(char *args) {
   }
   else if (strcmp(args, "w") == 0)
   {
-    return 0;
+    void info_watchpoint();
+    info_watchpoint();
   }
   else{
     printf("no such command");
@@ -131,7 +132,7 @@ static int cmd_w(char *args){
   }
   
   word_t vaddr_read();
-  vaddr_t expr = strtol(args, NULL, 16);
+  vaddr_t expr = strtol(args+1, NULL, 16);
   word_t ret = vaddr_read(expr, 1);
   
   void wp_set();

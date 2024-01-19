@@ -107,7 +107,6 @@ void info_watchpoint()
 }
  
  
- 
 void wp_set(char *args, int32_t res)
 {
   WP* wp = new_wp();
