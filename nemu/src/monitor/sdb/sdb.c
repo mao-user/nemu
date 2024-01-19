@@ -111,9 +111,7 @@ static int cmd_p(char *args){
     return 0;
   }
   bool success = true;
-  word_t vaddr_read();
-  vaddr_t expr = strtol(args+1, NULL, 16);
-  word_t ret = vaddr_read(expr, 1);
+  word_t ret = expr(arg,&success);
   if (success == true)
   {
     printf("10: %16d \n16:%#16x\n",ret,ret);
@@ -121,32 +119,6 @@ static int cmd_p(char *args){
   else{
     printf("can not identify\n");
   }
-  return 0;
-}
-
-static int cmd_w(char* args) {
-  if (!args) {
-    printf("Usage: w EXPR\n");
-    return 0;
-  }
-  word_t vaddr_read();
-  vaddr_t expr = strtol(args+1, NULL, 16);
-  word_t ret = vaddr_read(expr, 1);
-  void wp_set();
-  wp_set(args, ret);
-  
-  return 0;
-}
-
-static int cmd_d(char* args) {
-  char *arg = strtok(NULL, "");
-  if (!arg) {
-    printf("Usage: d N\n");
-    return 0;
-  }
-  int no = strtol(arg, NULL, 10);
-  void wp_remove();
-  wp_remove(no);
   return 0;
 }
 
@@ -163,9 +135,7 @@ static struct {
   { "si", "execute program step by step with si follow a num,such as si 10(si [N])", cmd_si },
   { "info", "print your reg with info_r ,", cmd_info },
   { "x", "Scan Memory with (x num address)", cmd_x },
-  { "p", "Usage: p EXPR. Calculate the expression, e.g. p $eax + 1", cmd_p },
-  { "w", "Halts program execution when the value of expression X changes (w X)", cmd_w},
-  { "d", "Delete the monitoring point with serial number N", cmd_d}
+  {"p", "Usage: p EXPR. Calculate the expression, e.g. p $eax + 1", cmd_p },
   /* TODO: Add more commands */
 
 };
