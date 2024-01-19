@@ -132,7 +132,7 @@ static int cmd_w(char *args){
   }
   
   word_t vaddr_read();
-  vaddr_t expr = strtol(args+1, NULL, 16);
+  vaddr_t expr = strtol(args, NULL, 16);
   word_t ret = vaddr_read(expr, 1);
   
   void wp_set();
