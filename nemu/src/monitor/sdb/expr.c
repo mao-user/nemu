@@ -27,6 +27,7 @@ enum {
   TK_NUM, // 10 & 16
   TK_REG,
   TK_VAR,
+  TK_DEREF,
 };
 
 static struct rule {
@@ -220,7 +221,12 @@ word_t expr(char *e, bool *success) {
     *success = false;
     return 0;
   }
-  
+  for (int i = 0; i < nr_token; i ++) {
+    if (tokens[i].type == '*' && (i == 0 || tokens[i - 1].type != TK_NUM) ) {
+      tokens[i].type = TK_DEREF;
+    }
+  }
+  //有一堆没实现的，比如负数等
   return eval(0, nr_token-1, success);
 }
 
