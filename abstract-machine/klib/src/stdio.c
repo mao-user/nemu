@@ -21,8 +21,55 @@ int printf(const char *fmt, ...) {
 static char HEX_CHARACTERS[] = "0123456789ABCDEF";
 #define BIT_WIDE_HEX 8
 
+static void reverse(char *s, int len) {
+  char *end = s + len - 1;
+  char tmp;
+  while (s < end) {
+    tmp = *s;
+    *s = *end;
+    *end = tmp;
+  }
+}
+
+static int itoa(int n, char *s, int base) {
+  assert(base <= 16);
+
+  int i = 0, sign = n, bit;
+  if (sign < 0) n = -n;
+  do {
+    bit = n % base;
+    if (bit >= 10) s[i++] = 'a' + bit - 10;
+    else s[i++] = '0' + bit;
+  } while ((n /= base) > 0);
+  if (sign < 0) s[i++] = '-';
+  s[i] = '\0';
+  reverse(s, i);
+
+  return i;
+}
+
 int vsprintf(char *out, const char *fmt, va_list ap) {
-  	return vsnprintf(out, -1, fmt, ap);
+  char *start = out;
+  
+  for (; *fmt != '\0'; ++fmt) {
+    if (*fmt != '%') {
+      *out = *fmt;
+      ++out;
+    } else {
+      switch (*(++fmt)) {
+      case '%': *out = *fmt; ++out; break;
+      case 'd': out += itoa(va_arg(ap, int), out, 10); break;
+      case 's':
+        char *s = va_arg(ap, char*);
+        strcpy(out, s);
+        out += strlen(out);
+        break;
+      }
+    }
+  }
+  
+  *out = '\0';
+  return out - start;
 }
 
 int sprintf(char *out, const char *fmt, ...) {
