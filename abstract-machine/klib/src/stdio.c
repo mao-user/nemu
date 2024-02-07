@@ -31,6 +31,7 @@ static void reverse(char *s, int len) {
   }
 }
 
+/* itoa convert int to string under base. return string length */
 static int itoa(int n, char *s, int base) {
   assert(base <= 16);
 
@@ -46,6 +47,33 @@ static int itoa(int n, char *s, int base) {
   reverse(s, i);
 
   return i;
+}
+
+int sprintf(char *out, const char *fmt, ...) {
+  va_list pArgs;
+  va_start(pArgs, fmt);
+  char *start = out;
+  
+  for (; *fmt != '\0'; ++fmt) {
+    if (*fmt != '%') {
+      *out = *fmt;
+      ++out;
+    } else {
+      switch (*(++fmt)) {
+      case '%': *out = *fmt; ++out; break;
+      case 'd': out += itoa(va_arg(pArgs, int), out, 10); break;
+      case 's':
+        char *s = va_arg(pArgs, char*);
+        strcpy(out, s);
+        out += strlen(out);
+        break;
+      }
+    }
+  }
+  *out = '\0';
+  va_end(pArgs);
+
+  return out - start;
 }
 
 int vsprintf(char *out, const char *fmt, va_list ap) {
@@ -72,13 +100,6 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
   return out - start;
 }
 
-int sprintf(char *out, const char *fmt, ...) {
-	va_list valist;
-	va_start(valist, fmt);
-	int res = vsprintf(out ,fmt, valist);
-	va_end(valist);
-	return res;
-}
 
 int snprintf(char *out, size_t n, const char *fmt, ...) {
 	va_list arg;
