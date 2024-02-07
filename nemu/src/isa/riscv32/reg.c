@@ -23,10 +23,19 @@ const char *regs[] = {
   "s8", "s9", "s10", "s11", "t3", "t4", "t5", "t6"
 };
 
+// void isa_reg_display() {
+//   for (int i = 0; i < 32; i++)
+//   {
+//     printf("%1.4s     %#8x     %10d\n",regs[i],cpu.gpr[i],cpu.gpr[i]);
+//   }
+// }
+
 void isa_reg_display() {
-  for (int i = 0; i < 32; i++)
-  {
-    printf("%1.4s     %#8x     %10d\n",regs[i],cpu.gpr[i],cpu.gpr[i]);
+  int reg_num = ARRLEN(regs);
+  int i;
+
+  for (i = 0; i < reg_num; i++) {
+    printf("%-8s%-#20x%-20d\n", regs[i], cpu.gpr[i], cpu.gpr[i]);
   }
 }
 
